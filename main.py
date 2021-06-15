@@ -1,25 +1,25 @@
-import discord
-import os
-import math
+import discord, os
 
+from discord.ext import commands
 from dotenv import load_dotenv
-from discord_slash import SlashCommand, SlashContext
+from discord_slash import SlashCommand
 
 load_dotenv()
 
-client = discord.Client(command_prefix="-", intents=discord.Intents.all())
-slash = SlashCommand(client, sync_commands=True)
 
-@client.event
+bot = commands.Bot(command_prefix="-", intents=discord.Intents.all())
+slash = SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
+
+@bot.event
 async def on_ready():
-    print('Bot logged in as {0.user}'.format(client))
+    print('Bot logged in as {0.user}'.format(bot))
 
-@slash.slash(name="ping", description = "Check the status of the bot", guild_ids = [485523193952731156, 607020159336579083])
-async def _ping(ctx: SlashContext):
-    embed = discord.Embed(title="🏓 Pong!", description=f"Latency: {math.trunc(client.latency*1000)} ms", color=0xff0000)
-    await ctx.send(embeds=[embed])
+for filename in os.listdir("./cogs"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cogs.{filename[:-3]}")
+        print("Cog Loaded: " + filename)
 
-client.run(os.getenv('DISCORD_TOKEN'))
+bot.run(os.getenv('DISCORD_TOKEN'))
 
 
 
