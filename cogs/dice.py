@@ -35,26 +35,20 @@ class Dice(commands.Cog):
                )
              ])
     async def _dice(self, ctx: SlashContext, sides: int, number: int = 1, modifier: int = 0):
-        if (number < 1 or sides < 1):
-            embed = discord.Embed(title = "Error", description = "You can't roll negative dice!", color=0xff0000)
-            embed.set_author(name="Dice", icon_url="https://i.imgur.com/G164YiZ.png")
-
-            await ctx.send(embeds=[embed])
-
-        elif (sides > 120):
-            embed = discord.Embed(title = "Error", description = "You can't have a die with more than 120 sides!", color=0xff0000)
+        if (sides > 120 or number < 1 or sides < 1):
+            embed = discord.Embed(title = "Error", description = "Dice must have between 1 and 120 sides", color=0xff0000)
             embed.set_author(name="Dice", icon_url="https://i.imgur.com/G164YiZ.png")
 
             await ctx.send(embeds=[embed])
 
         elif (number > 200):
-            embed = discord.Embed(title = "Error", description = "Are you really trying to roll more than 200 dice?", color=0xff0000)
+            embed = discord.Embed(title = "Error", description = "Cannot roll more than 200 dice", color=0xff0000)
             embed.set_author(name="Dice", icon_url="https://i.imgur.com/G164YiZ.png")
 
             await ctx.send(embeds=[embed])
 
-        elif (modifier > 10000):
-            embed = discord.Embed(title = "Error", description = "A modifier above 10,000? Really?", color=0xff0000)
+        elif (modifier > 10000 or modifier < -10000):
+            embed = discord.Embed(title = "Error", description = "Modifier cannot be above 10,000 or below -10,000", color=0xff0000)
             embed.set_author(name="Dice", icon_url="https://i.imgur.com/G164YiZ.png")
 
             await ctx.send(embeds=[embed])
@@ -70,7 +64,7 @@ class Dice(commands.Cog):
 
             result += modifier
 
-            footer = f"{number} {sides}-sided dice"
+            footer = f"{number} x {sides}-sided dice"
             if (modifier > 0):
                 diceStr += f" + {modifier}"
                 footer += f", with modifier {modifier}"
